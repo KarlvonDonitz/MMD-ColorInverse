@@ -26,6 +26,7 @@ float4 MaterialDiffuse : DIFFUSE  < string Object = "Geometry"; >;
 static float alpha1 = MaterialDiffuse.a;
 
 float scaling0 : CONTROLOBJECT < string name = "(self)"; >;
+float Transparent : CONTROLOBJECT < string name = "(self)"; string item = "Tr";>;
 static float scaling = scaling0 * 0.1;
 
 
@@ -76,7 +77,8 @@ float4 PS_ColorShift( float2 Tex: TEXCOORD0 ) : COLOR {
     float R = 1-tex2D( ScnSamp, Tex ).r;
     float G = 1-tex2D( ScnSamp, Tex ).g;
     float B = 1-tex2D( ScnSamp, Tex ).b;
-    return float4(R,G,B,1);
+	float4 Color= Transparent*float4(R,G,B,1)+(1-Transparent)*tex2D( ScnSamp, Tex );
+    return Color;
 }
 
 
