@@ -64,7 +64,7 @@ struct VS_OUTPUT {
     float2 Tex            : TEXCOORD0;
 };
 
-VS_OUTPUT VS_passDraw( float4 Pos : POSITION, float4 Tex : TEXCOORD0 ) {
+VS_OUTPUT VS_Main( float4 Pos : POSITION, float4 Tex : TEXCOORD0 ) {
     VS_OUTPUT Out = (VS_OUTPUT)0; 
     
     Out.Pos = Pos;
@@ -73,7 +73,7 @@ VS_OUTPUT VS_passDraw( float4 Pos : POSITION, float4 Tex : TEXCOORD0 ) {
     return Out;
 }
 
-float4 PS_ColorShift( float2 Tex: TEXCOORD0 ) : COLOR {   
+float4 PS_Effect( float2 Tex: TEXCOORD0 ) : COLOR {   
     float R = 1-tex2D( ScnSamp, Tex ).r;
     float G = 1-tex2D( ScnSamp, Tex ).g;
     float B = 1-tex2D( ScnSamp, Tex ).b;
@@ -82,7 +82,7 @@ float4 PS_ColorShift( float2 Tex: TEXCOORD0 ) : COLOR {
 }
 
 
-technique ColorShift <
+technique Effect <
     string Script = 
         
         "RenderColorTarget0=ScnMap;"
@@ -99,13 +99,13 @@ technique ColorShift <
         "ClearSetDepth=ClearDepth;"
         "Clear=Color;"
         "Clear=Depth;"
-        "Pass=ColorShiftPass;"
+        "Pass=EffectPass;"
     ;
     
 > {
-    pass ColorShiftPass < string Script= "Draw=Buffer;"; > {
+    pass EffectPass < string Script= "Draw=Buffer;"; > {
         AlphaBlendEnable = FALSE;
-        VertexShader = compile vs_2_0 VS_passDraw();
-        PixelShader  = compile ps_2_0 PS_ColorShift();
+        VertexShader = compile vs_2_0 VS_Main();
+        PixelShader  = compile ps_2_0 PS_Effect();
     }
 }
